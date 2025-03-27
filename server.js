@@ -3,32 +3,30 @@ const cors = require("cors");
 const conectarDB = require("./Config/db");
 require("dotenv").config();
 
-// Importar las rutas
 const TerrarioRoutes = require("./routes/TerrarioRoutes");
-
 
 const app = express();
 const port = process.env.PORT || 4000;
 
-//oscar
-// Configurar CORS
+// Configurar CORS con soporte para múltiples orígenes
 const corsOptions = {
-  origin: 'http://localhost:3000', // Cambia esto al origen de tu frontend
+  origin: ['http://localhost:3000', 'https://tu-dominio-frontend.com'], // Ajusta al origen real de tu frontend
   optionsSuccessStatus: 200,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
-//oscar
 
 // Middleware para parsear JSON y habilitar CORS
 app.use(express.json());
-//oscar
 app.use(cors(corsOptions));
-//oscar
-//app.use(cors());
 
 // Conectar a la base de datos
 conectarDB();
+
+// Ruta raíz básica para evitar errores 404
+app.get("/", (req, res) => {
+  res.send("Bienvenido a mi servidor!");
+});
 
 // Rutas API existentes
 app.use("/api/usuarios", require("./routes/userRoutes"));
@@ -39,16 +37,23 @@ app.use("/api/politicas", require("./routes/PoliticaRoutes"));
 app.use("/api/preguntas", require("./routes/PreguntaRoutes"));
 app.use("/api/contactos", require("./routes/ContactoRoutes"));
 app.use("/api/informaciones", require("./routes/InformacionRoutes"));
-app.use("/api/terrario", TerrarioRoutes); // Ahora está correctamente importado
+app.use("/api/terrario", TerrarioRoutes);
 app.use("/api/productos", require("./routes/ProductoRoutes"));
 
-// Nueva ruta para el control de actuadores
+// Nueva ruta para el control de actuadores con validación estricta
 app.post("/api/control", (req, res) => {
   const { actuador, accion } = req.body;
 
-  // Verificar datos recibidos
+  // Valores válidos para actuadores y acciones
+  const validActuadores = ['fan', 'lamp'];
+  const validAcciones = ['on', 'off'];
+
   if (!actuador || !accion) {
     return res.status(400).json({ message: "Datos incompletos: faltan actuador o acción." });
+  }
+
+  if (!validActuadores.includes(actuador) || !validAcciones.includes(accion)) {
+    return res.status(400).json({ message: "Actuador o acción no válidos." });
   }
 
   console.log(`Recibido: Actuador - ${actuador}, Acción - ${accion}`);
@@ -56,31 +61,26 @@ app.post("/api/control", (req, res) => {
   // Lógica de control de actuadores
   switch (actuador) {
     case "fan":
-      if (accion === "on") {
-        console.log("Encendiendo el ventilador...");
-      } else if (accion === "off") {
-        console.log("Apagando el ventilador...");
-      } else {
-        return res.status(400).json({ message: "Acción no válida para el ventilador." });
-      }
+      accion === "on" 
+        ? console.log("Encendiendo el ventilador...") 
+        : console.log("Apagando el ventilador...");
       break;
-
     case "lamp":
-      if (accion === "on") {
-        console.log("Encendiendo la lámpara...");
-      } else if (accion === "off") {
-        console.log("Apagando la lámpara...");
-      } else {
-        return res.status(400).json({ message: "Acción no válida para la lámpara." });
-      }
+      accion === "on" 
+        ? console.log("Encendiendo la lámpara...") 
+        : console.log("Apagando la lámpara...");
       break;
-
     default:
-      return res.status(400).json({ message: "Actuador no reconocido." });
+      console.error("Actuador no reconocido.");
   }
 
-  // Responder con éxito
   res.status(200).json({ message: "Acción realizada con éxito." });
+});
+
+// Middleware global para manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Error interno del servidor");
 });
 
 // Iniciar servidor
