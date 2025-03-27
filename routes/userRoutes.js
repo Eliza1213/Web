@@ -19,8 +19,10 @@ router.get("/perfil", authMiddleware(), (req, res) => {
   res.json({ mensaje: "Bienvenido a tu perfil", usuario: req.user });
 });
 
-// Ruta para obtener el perfil de un usuario específico
-router.get("/:id", authMiddleware(), obtenerPerfil);
+
+// oscar.js
+router.get("/perfil", authMiddleware(), obtenerPerfil);
+//oscar
 
 // Rutas protegidas solo para administradores
 router.get("/admin/usuarios", authMiddleware(["admin"]), getUsuarios);

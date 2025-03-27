@@ -2,10 +2,10 @@ const Usuario = require("../models/Usuario");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Obtener el perfil de un usuario específico
+//oscar
 const obtenerPerfil = async (req, res) => {
   try {
-    const usuario = await Usuario.findById(req.params.id).select('-password');
+    const usuario = await Usuario.findById(req.user.id).select('-password');
     if (!usuario) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
@@ -14,6 +14,7 @@ const obtenerPerfil = async (req, res) => {
     res.status(500).json({ error: "Error al obtener el usuario" });
   }
 };
+//oscar
 
 // Registrar un nuevo usuario
 const registerUser = async (req, res) => {

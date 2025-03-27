@@ -10,9 +10,22 @@ const TerrarioRoutes = require("./Routes/TerrarioRoutes");
 const app = express();
 const port = process.env.PORT || 4000;
 
+//oscar
+// Configurar CORS
+const corsOptions = {
+  origin: 'http://localhost:3000', // Cambia esto al origen de tu frontend
+  optionsSuccessStatus: 200,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+};
+//oscar
+
 // Middleware para parsear JSON y habilitar CORS
 app.use(express.json());
-app.use(cors());
+//oscar
+app.use(cors(corsOptions));
+//oscar
+//app.use(cors());
 
 // Conectar a la base de datos
 conectarDB();
