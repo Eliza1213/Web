@@ -10,7 +10,7 @@ const port = process.env.PORT || 4000;
 
 // Configurar CORS con soporte para múltiples orígenes
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://tu-dominio-frontend.com'], // Ajusta al origen real de tu frontend
+  origin: ['http://localhost:3000', 'https://tortuterra.vercel.app'], // Ajusta al origen real de tu frontend
   optionsSuccessStatus: 200,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
