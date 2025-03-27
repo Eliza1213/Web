@@ -181,4 +181,24 @@ const cambiarContrasena = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUsuarios, updateRol, deleteUsuario, verificarCorreo, obtenerPregunta, verificarRespuesta, cambiarContrasena, obtenerPerfil };
+// userController.js de oscar
+const actualizarPerfil = async (req, res) => {
+  try {
+    const { nombre, ap, am, email, telefono, username } = req.body;
+    const usuario = await Usuario.findByIdAndUpdate(
+      req.user.id,
+      { nombre, ap, am, email, telefono, username },
+      { new: true }
+    ).select('-password');
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUsuarios, updateRol, deleteUsuario, verificarCorreo, obtenerPregunta, verificarRespuesta, cambiarContrasena, obtenerPerfil, actualizarPerfil };

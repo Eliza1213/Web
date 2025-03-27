@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser, getUsuarios, updateRol, deleteUsuario, verificarCorreo, obtenerPregunta, verificarRespuesta, cambiarContrasena, obtenerPerfil } = require("../Controllers/userController");
+const { registerUser, loginUser, getUsuarios, updateRol, deleteUsuario, verificarCorreo, obtenerPregunta, verificarRespuesta, cambiarContrasena, obtenerPerfil, actualizarPerfil} = require("../Controllers/userController");
 // Agrega esta línea para importar los controladores de unión
 const { vincularDispositivo, activarDispositivo, obtenerDispositivosUsuario } = require("../Controllers/unionControlle");
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -22,6 +22,7 @@ router.get("/perfil", authMiddleware(), (req, res) => {
 
 // oscar.js
 router.get("/perfil", authMiddleware(), obtenerPerfil);
+router.put("/perfil", authMiddleware(), actualizarPerfil);
 //oscar
 
 // Rutas protegidas solo para administradores
